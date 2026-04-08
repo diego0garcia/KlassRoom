@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "892321441281",
+    "project_id": "klassroom-ddc64",
+    "storage_bucket": "klassroom-ddc64.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:892321441281:android:21e657888df9cbc65b8200",
+        "android_client_info": {
+          "package_name": "dam.sequeros.klassroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCiiLh4Ak_46BVnKFqvpbL9IRx9AbRs1MU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
