@@ -1,4 +1,4 @@
-package dam.sequeros.klassroom.ui.main
+package dam.sequeros.klassroom.ui.main.profile
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -7,18 +7,18 @@ import dam.sequeros.klassroom.domain.AppSettings
 import org.koin.compose.koinInject
 
 @Composable
-fun MainComponent(
+fun ProfileComponent(
     onCloseSession: () -> Unit
-){
+) {
     val appSettings: AppSettings = koinInject()
     val screenSize by appSettings.screenSize.collectAsState()
 
     if (screenSize){
-        MainDesktopScreen(
+        ProfileDesktopScreen(
             onCloseSession = onCloseSession
         )
     }else{
-        MainMobilScreen(
+        ProfileMobilScreen(
             onCloseSession = onCloseSession
         )
     }

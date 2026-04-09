@@ -36,12 +36,12 @@ actual class FirebaseAuthRepository actual constructor(
         val respuesta: LoginResponse = request.body()
         val tokenDatos = TokenJwt(respuesta.idToken)
 
-        val user: UserAccount = UserAccount(
+        val user = UserAccount(
             id = tokenDatos.payload.id ?: "",
             displayName =  tokenDatos.payload.displayName ?: "",
             email = tokenDatos.payload.email ?: "",
             profilePictureUrl = tokenDatos.payload.profilePictureUrl,
-            role = UserRole.valueOf(tokenDatos.payload.role ?: UserRole.USER.name) ,
+            role = UserRole.valueOf(tokenDatos.payload.role ?: UserRole.TEACHER.name) ,
         )
 
         sessionManager.logIn(user,respuesta.idToken, respuesta.refreshToken)

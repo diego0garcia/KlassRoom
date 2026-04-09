@@ -4,6 +4,7 @@ import dam.sequeros.klassroom.aplication.command.LoginUserCommand
 import dam.sequeros.klassroom.aplication.command.RegisterUserCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.model.users.UserAccount
+import dam.sequeros.klassroom.domain.model.users.UserRole
 import dam.sequeros.klassroom.domain.repository.IAuthRepository
 import io.ktor.client.HttpClient
 
@@ -22,7 +23,8 @@ actual class FirebaseAuthRepository actual constructor(
 
             if (uuid != null) {
                 val document = sessionManager.db.collection("users").document(uuid).get()
-                document.data<UserAccount>()
+                val user = document.data<UserAccount>()
+                user.copy(id = uuid)
             } else {
                 null
             }
@@ -48,6 +50,7 @@ actual class FirebaseAuthRepository actual constructor(
                     displayName = command.username,
                     email = command.email,
                     profilePictureUrl = null,
+                    role = UserRole.USER
                 )
 
                 sessionManager.db.collection("users").document(uuid).set(userToInsert)

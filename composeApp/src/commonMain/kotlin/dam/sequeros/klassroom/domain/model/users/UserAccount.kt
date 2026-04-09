@@ -8,5 +8,5 @@ data class UserAccount(
     val displayName: String?,
     val email: String?,
     val profilePictureUrl: String?,
-    val role: UserRole = UserRole.USER, // "user", "admin", "teacher"
+    val role: UserRole?, // "user", "teacher", "admin"
 )
