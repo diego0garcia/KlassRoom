@@ -1,8 +1,9 @@
 package dam.sequeros.klassroom.domain
 
 import dam.sequeros.klassroom.domain.model.users.UserAccount
+import dam.sequeros.klassroom.domain.model.users.UserRole
 import dam.sequeros.klassroom.infraestructure.TokenJwt
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenStorage
+import dam.sequeros.klassroom.infraestructure.TokenStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,70 +13,46 @@ import kotlinx.serialization.json.Json
 actual class SessionManager actual constructor(
     private val tokenStorage: TokenStorage
 ) {
-    private val json = Json {
-        ignoreUnknownKeys = true
-        encodeDefaults = true
-    }
-
     private val _currentUserAccount = MutableStateFlow<UserAccount?>(null)
     actual val currentUserAccount: StateFlow<UserAccount?> = _currentUserAccount.asStateFlow()
 
     private val _accessToken = MutableStateFlow<String?>(null)
-    actual val accessToken = _accessToken.asStateFlow()
+    val accessToken = _accessToken.asStateFlow()
 
-    private val _refreshToken = MutableStateFlow<String?>(null)
-    actual val refreshToken = _refreshToken.asStateFlow()
+    private val _idToken = MutableStateFlow<String?>(null)
+    val idToken = _idToken.asStateFlow()
+
+    private val _dataToken = MutableStateFlow<String?>(null)
+    val dataToken = _dataToken.asStateFlow()
 
     actual fun setCurrentUser(user: UserAccount) {
         _currentUserAccount.update { user }
     }
 
-    actual suspend fun clearCurrentUser() {
-        _currentUserAccount.update { null }
-        _accessToken.update { null }
-        _refreshToken.update { null }
-        tokenStorage.clear()
+    actual fun logIn(user: UserAccount, idToken: String, refreshToken: String) {
+        _currentUserAccount.update { user }
+        _idToken.update { idToken }
+        tokenStorage.saveTokens(refreshToken, idToken)
     }
 
-    actual fun recuperarSesion(): Boolean {
-        val access = tokenStorage.getAccessToken()
+    actual fun recoverSession(): Boolean {
+        val data = tokenStorage.getIdToken()
         val refresh = tokenStorage.getRefreshToken()
-        val data = tokenStorage.getDataToken()
 
         if (!data.isNullOrBlank()) {
-            val user = runCatching {
-                json.decodeFromString<UserAccount>(data)
-            }.getOrElse {
-                val tokenData = TokenJwt(data)
-                UserAccount(
-                    activeProfileId = tokenData.payload.userId!!,
-                    displayName = tokenData.payload.userName!!,
-                    email = tokenData.payload.userEmail ?: "",
-                    profilePictureUrl = tokenData.payload.userImage,
-                )
-            }
+            val tokenData = TokenJwt(data)
+            val user = UserAccount(
+                id = tokenData.payload.id ?: "",
+                displayName =  tokenData.payload.displayName ?: "",
+                email = tokenData.payload.email ?: "",
+                profilePictureUrl = tokenData.payload.profilePictureUrl,
+                role = UserRole.valueOf(tokenData.payload.role ?: UserRole.USER.name) ,
+            )
 
-            setCurrentUser(user)
-
-            _accessToken.update { access }
-            _refreshToken.update { refresh }
+            _currentUserAccount.update { user }
+            _idToken.update { refresh }
             return true
         }
         return false
-    }
-
-    fun persistFirebaseSession(
-        user: UserAccount,
-        idToken: String,
-        refreshToken: String
-    ) {
-        tokenStorage.saveTokens(
-            accessToken = idToken,
-            refreshToken = refreshToken,
-            dataToken = json.encodeToString(UserAccount.serializer(), user)
-        )
-        _accessToken.update { idToken }
-        _refreshToken.update { refreshToken }
-        setCurrentUser(user)
     }
 }

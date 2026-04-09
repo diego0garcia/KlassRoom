@@ -7,9 +7,10 @@ import dam.sequeros.klassroom.domain.AppSettings
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.repository.IAuthRepository
 import dam.sequeros.klassroom.infraestructure.firebase.FirebaseAuthRepository
+import dam.sequeros.klassroom.infraestructure.ktor.createHttpClient
 import dam.sequeros.klassroom.ui.main.MainViewModel
 import dam.sequeros.klassroom.ui.start.StartViewModel
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenStorage
+import dam.sequeros.klassroom.infraestructure.TokenStorage
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -29,5 +30,14 @@ val appModule = module {
     factory { RegisterUserUseCase(get()) }
 
     //DOMAIN LAYER
-    single <IAuthRepository>{ FirebaseAuthRepository(get()) }
+    single <IAuthRepository>{ FirebaseAuthRepository(get(), get()) }
+
+    //INFRASTRUCTURE LAYER
+    single {
+        createHttpClient(
+            get(),
+            get(),
+            "https://securetoken.googleapis.com/v1/token?key=AIzaSyCiiLh4Ak_46BVnKFqvpbL9IRx9AbRs1MU"
+        )
+    }
 }

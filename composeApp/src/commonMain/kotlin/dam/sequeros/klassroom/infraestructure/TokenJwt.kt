@@ -14,12 +14,11 @@ data class TokenJwtPayload(val claims: Map<String, Any> = emptyMap()){
     fun <T> get(key: String): T? = claims[key] as? T
 
     // Propiedades calculadas para los campos más comunes (opcional)
-    val userId: String? get() = get("sub")
-    val userName: String? get() = get("name")
-    val userEmail: String? get() = get("email")
-    val userImage: String? get() = get("picture")
-    val status: String?  get() = get("status")
-    val expiration: Long? get() = (claims["exp"] as? Number)?.toLong()
+    val id: String? get() = get("user_id") ?: get("sub")
+    val displayName: String? get() = get("name")
+    val email: String? get() = get("email")
+    val profilePictureUrl: String? get() = get("picture")
+    val role: String?  get() = get("role")
 }
 data class TokenJwtFirma(val firma:String)
 
@@ -29,6 +28,16 @@ class TokenJwt(val rawToken: String) {
     val header: TokenJwtHeader
     val payload: TokenJwtPayload
     val firma: TokenJwtFirma
+
+    private fun normalizeBase64(input: String): String {
+        var result = input
+            .replace('-', '+')
+            .replace('_', '/')
+        val paddingNeeded = (4 - result.length % 4) % 4
+        result += "=".repeat(paddingNeeded)
+        return result
+    }
+
     init {
         val parts = rawToken.split(".")
         if (parts.size != 3) {
@@ -38,9 +47,11 @@ class TokenJwt(val rawToken: String) {
         payload = decodePayload(parts[1])
         firma = TokenJwtFirma(parts[2])
     }
+
     @OptIn(ExperimentalEncodingApi::class)
     private fun decodeHeader(base64Header: String): TokenJwtHeader {
-        val jsonString = Base64.UrlSafe.decode(base64Header).decodeToString()
+        val normalized = normalizeBase64(base64Header)
+        val jsonString = Base64.decode(normalized).decodeToString()
         val json = Json.parseToJsonElement(jsonString).jsonObject
 
         return TokenJwtHeader(
@@ -51,13 +62,11 @@ class TokenJwt(val rawToken: String) {
 
     @OptIn(ExperimentalEncodingApi::class)
     private fun decodePayload(base64Payload: String): TokenJwtPayload {
-        val decoder = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL)
-        val jsonString = decoder.decode(base64Payload).decodeToString()
+        val normalized = normalizeBase64(base64Payload)
+        val jsonString = Base64.decode(normalized).decodeToString()
         val jsonElement = Json.parseToJsonElement(jsonString).jsonObject
 
-        val claimsMap = jsonElement.mapValues { (_, value) ->
-            value.toPrimitive()
-        }
+        val claimsMap = jsonElement.mapValues { (_, value) -> value.toPrimitive() }
         return TokenJwtPayload(claimsMap)
     }
 

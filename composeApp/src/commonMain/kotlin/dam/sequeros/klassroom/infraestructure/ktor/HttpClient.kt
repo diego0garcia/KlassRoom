@@ -1,7 +1,7 @@
-package ies.sequeros.dam.pmdm.gestionperifl.infraestructure.ktor
+package dam.sequeros.klassroom.infraestructure.ktor
 
 import dam.sequeros.klassroom.domain.SessionManager
-import ies.sequeros.dam.pmdm.gestionperifl.infraestructure.TokenStorage
+import dam.sequeros.klassroom.infraestructure.TokenStorage
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -11,6 +11,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.client.request.forms.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
@@ -19,7 +20,7 @@ fun createHttpClient(
     sessionManager: SessionManager,
     refreshUrl:String
 ): HttpClient {
-    return HttpClient { // Puedes usar HttpClient(CIO), HttpClient(Darwin), etc.
+    return HttpClient {
         install(DefaultRequest) {
             header(HttpHeaders.ContentType, ContentType.Application.Json)
         }
@@ -32,17 +33,19 @@ fun createHttpClient(
                     println("KTOR CLIENT LOG: $message")
                 }
             }
-            level = LogLevel.ALL // O LogLevel.ALL para ver todo
+            level = LogLevel.ALL
         }
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
                 prettyPrint = true
                 isLenient = true
+                encodeDefaults = true
             })
         }
         install(Auth) {
             bearer {
+                /*
                 loadTokens {
                     val access = tokenStorage.getAccessToken()
                     val refresh = tokenStorage.getRefreshToken()
@@ -51,26 +54,39 @@ fun createHttpClient(
                         BearerTokens(accessToken = access, refreshToken = refresh ?: "")
                     } else null
                 }
+                 */
+
+                sendWithoutRequest { request ->
+                    val url = request.url.toString()
+                    !url.contains("identitytoolkit.googleapis.com") && !url.contains("securetoken.googleapis.com")
+                }
 
                 refreshTokens {
                     val oldRefreshToken = tokenStorage.getRefreshToken() ?: return@refreshTokens null
 
                     val response = client.post(refreshUrl) {
                         markAsRefreshTokenRequest()
-                        setBody(mapOf("refresh_token" to oldRefreshToken))
+                        contentType(ContentType.Application.FormUrlEncoded)
+                        setBody(
+                            FormDataContent(
+                                Parameters.build {
+                                    append("grant_type", "refresh_token")
+                                    append("refresh_token", oldRefreshToken)
+                                }
+                            )
+                        )
                     }
 
                     if (response.status == HttpStatusCode.OK) {
                         val data = response.body<Map<String, String>>()
 
-                        val newAccess = data["access_token"] ?: ""
                         val newRefresh = data["refresh_token"] ?: oldRefreshToken
                         val idToken = data["id_token"] ?: ""
 
-                        tokenStorage.saveTokens(newAccess, newRefresh, idToken)
-                        sessionManager.recuperarSesion()
+                        tokenStorage.saveTokens( newRefresh, idToken)
+                        sessionManager.recoverSession()
 
-                        BearerTokens(newAccess, newRefresh)
+                        BearerTokens(idToken, newRefresh)
                     } else {
                         null
                     }

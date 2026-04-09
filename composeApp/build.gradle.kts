@@ -25,6 +25,7 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+            implementation("io.ktor:ktor-client-okhttp:3.3.0")
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)

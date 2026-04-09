@@ -5,10 +5,11 @@ import dam.sequeros.klassroom.aplication.command.RegisterUserCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.model.users.UserAccount
 import dam.sequeros.klassroom.domain.repository.IAuthRepository
-import kotlin.text.get
+import io.ktor.client.HttpClient
 
 actual class FirebaseAuthRepository actual constructor(
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val client: HttpClient
 ) : IAuthRepository {
     actual override suspend fun login(command: LoginUserCommand): UserAccount? {
         return try {
@@ -43,7 +44,7 @@ actual class FirebaseAuthRepository actual constructor(
         if (uuid != null) {
             try {
                 val userToInsert = UserAccount(
-                    activeProfileId = uuid,
+                    id = uuid,
                     displayName = command.username,
                     email = command.email,
                     profilePictureUrl = null,
