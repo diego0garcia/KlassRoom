@@ -62,40 +62,6 @@ class StartViewModel(
         _state.value = state.value.copy(isValid = isFormValid.value)
     }
 
-    //PARA DEPURAR, LOS USUARIOS SE REGISTRAN DESDE OTRO SITIO
-    fun onRegister() {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    isLoading = true,
-                    errorMessage = null
-                )
-            }
-
-            try {
-                val command = RegisterUserCommand(
-                    username = _state.value.username,
-                    email = "paco@paco.es",
-                    password = _state.value.password
-                )
-
-                registerUserUseCase.invoke(command)
-                    .onSuccess {
-                        _state.update { it.copy(isLoginSuccess = true) }
-                    }
-                    .onFailure { error ->
-                        _state.update { it.copy(errorMessage = error.message ?: "UNKNOW ERROR") }
-                    }
-
-            } catch (e: Exception) {
-                _state.update { it.copy(errorMessage = "Error register: ${e.message}") }
-            } finally {
-                _state.update { it.copy(isLoading = false) }
-            }
-        }
-    }
-
-
     fun onLogin() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }

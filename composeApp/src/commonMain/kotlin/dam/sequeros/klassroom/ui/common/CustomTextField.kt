@@ -40,6 +40,7 @@ fun CustomTextField(
     onValueChange: (String) -> Unit,
     error: String? = null,
     isPassword: Boolean = false,
+    wordColor: Color = Color.Black,
     modifier: Modifier = Modifier
 ) {
 
@@ -67,7 +68,7 @@ fun CustomTextField(
             onValueChange = onValueChange,
             modifier = Modifier.fillMaxWidth(),
             isError = error != null,
-            textStyle = TextStyle(color = Color.Black, fontWeight = FontWeight.Medium),
+            textStyle = TextStyle(color = wordColor, fontWeight = FontWeight.Medium),
             supportingText = {
                 error?.let {
                     Text(text = it, color = MaterialTheme.colorScheme.error)
