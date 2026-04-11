@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginResponse(
+data class LoginAuthResponse(
     @SerialName("localId")
     val localId: String,
     @SerialName("idToken")
