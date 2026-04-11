@@ -20,7 +20,6 @@ actual class FirebaseAuthRepository actual constructor(
 ) : IAuthRepository {
 
     actual override suspend fun login(command: LoginUserCommand): UserAccount? {
-
         //PRIMERO EL LOGIN EN AUTH
         val authRequest = client.post(
             urlString = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${DesktopFirebaseConfig.apiKey}"
@@ -59,7 +58,48 @@ actual class FirebaseAuthRepository actual constructor(
         return null
     }
 
-    actual override suspend fun register(command: RegisterUserCommand) {/*TODO: NO HACIDO*/
+    actual override suspend fun register(command: RegisterUserCommand) {
+        //PRIMERO EL REGISTRO EN AUTH
+        val authRequest = client.post(
+            urlString = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${DesktopFirebaseConfig.apiKey}"
+        ) {
+            setBody(command)
+        }
+
+        if (authRequest.status.value == 400) {
+            throw Exception("El email ya está en uso o los datos son inválidos")
+        }
+
+        if (!authRequest.status.isSuccess()) {
+            throw Exception("Error del servidor (Auth): ${authRequest.status.value}")
+        }
+
+        //SEGUNDO REGISTRO EN FIREBASE
+        val authResponse: LoginAuthResponse = authRequest.body()
+        val uuid = authResponse.localId
+
+        val firestoreData = mapOf(
+            "fields" to mapOf(
+                "activeProfileId" to mapOf("stringValue" to uuid),
+                "displayName" to mapOf("stringValue" to command.username),
+                "email" to mapOf("stringValue" to command.email),
+                "profilePictureUrl" to mapOf("stringValue" to ""),
+                "role" to mapOf("stringValue" to (command.role?.name ?: UserRole.USER.name))
+            )
+        )
+
+        val dataRequest = client.post(
+            urlString = "https://firestore.googleapis.com/v1/projects/${DesktopFirebaseConfig.projectId}/databases/(default)/documents/users?documentId=${authResponse.localId}"
+        ) {
+            headers.append("Authorization", "Bearer ${authResponse.idToken}")
+            setBody(firestoreData)
+        }
+
+        if (!dataRequest.status.isSuccess()) {
+            throw Exception("Error al guardar los datos del usuario: ${dataRequest.status.value}")
+        }
+
+        println("User registered correctly!!! ID: $uuid")
     }
 
     actual override suspend fun update() {/*TODO: NO HACIDO*/

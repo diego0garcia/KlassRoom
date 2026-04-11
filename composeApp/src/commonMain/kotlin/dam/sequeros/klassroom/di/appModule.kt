@@ -11,6 +11,7 @@ import dam.sequeros.klassroom.infraestructure.ktor.createHttpClient
 import dam.sequeros.klassroom.ui.main.MainViewModel
 import dam.sequeros.klassroom.ui.start.StartViewModel
 import dam.sequeros.klassroom.infraestructure.TokenStorage
+import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -25,6 +26,7 @@ val appModule = module {
     viewModel { AppViewModel(get()) }
     viewModel { StartViewModel(get(), get(), get()) }
     viewModel { MainViewModel() }
+    viewModel { AdminPanelViewModel(get()) }
 
     factory { LoginUserUseCase(get()) }
     factory { RegisterUserUseCase(get()) }
