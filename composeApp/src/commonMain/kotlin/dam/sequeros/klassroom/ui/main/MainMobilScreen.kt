@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,6 +23,7 @@ import dam.sequeros.klassroom.domain.model.users.UserRole
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelComponent
 import dam.sequeros.klassroom.ui.main.home.HomeComponent
 import dam.sequeros.klassroom.ui.main.profile.ProfileComponent
+import dam.sequeros.klassroom.ui.main.schedules.SchedulesComponent
 import org.koin.compose.koinInject
 
 @Composable
@@ -96,6 +98,26 @@ fun MainMobilScreen(
                         )
                     )
                 }
+
+                //SCHEDULES
+                if (user?.role == UserRole.TEACHER || user?.role == UserRole.ADMIN) {
+                    NavigationBarItem(
+                        icon = { Icon(imageVector = Icons.Default.Schedule, contentDescription = "Schedules") },
+                        selected = currentRoute == MainRoutes.Schedules,
+                        onClick = {
+                            navController.navigate(route = MainRoutes.Schedules) {
+                                launchSingleTop = true
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = Color.Transparent
+                        )
+                    )
+                }
             }
         }
     ) { innerPadding ->
@@ -118,6 +140,9 @@ fun MainMobilScreen(
                 }
                 composable(route = MainRoutes.AdminPanel) {
                     AdminPanelComponent()
+                }
+                composable(route = MainRoutes.Schedules) {
+                    SchedulesComponent()
                 }
             }
         }
