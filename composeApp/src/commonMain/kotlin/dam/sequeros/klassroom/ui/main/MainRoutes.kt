@@ -4,4 +4,5 @@ object MainRoutes {
     const val Home = "home"
     const val Profile = "profile"
     const val AdminPanel = "admin-panel"
+    const val Schedules = "schedules"
 }
