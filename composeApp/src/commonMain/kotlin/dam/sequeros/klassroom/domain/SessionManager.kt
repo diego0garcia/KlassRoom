@@ -10,7 +10,6 @@ expect class SessionManager (
     tokenStorage: TokenStorage
 ){
     val currentUserAccount: StateFlow<UserAccount?>
-
     fun setCurrentUser(user: UserAccount)
 
     //JVM

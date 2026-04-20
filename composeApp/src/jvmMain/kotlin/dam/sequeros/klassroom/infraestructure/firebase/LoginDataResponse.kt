@@ -13,8 +13,3 @@ data class UserFields(
     val role: FirestoreValue? = null,
     val profilePictureUrl: FirestoreValue? = null
 )
-
-@Serializable
-data class FirestoreValue(
-    val stringValue: String? = null // Firestore usa esta clave para los Strings
-)

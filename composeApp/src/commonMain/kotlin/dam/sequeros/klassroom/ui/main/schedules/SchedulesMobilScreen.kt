@@ -31,8 +31,6 @@ fun SchedulesMobilScreen() {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        ScheduleTable(
-            modifier = Modifier.fillMaxWidth()
-        )
+        ScheduleTable()
     }
 }
