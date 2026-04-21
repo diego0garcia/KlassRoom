@@ -20,11 +20,10 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
-
     //APPLICATION LAYER
     single { AppSettings() }
     single { TokenStorage(get()) }
-    single { SessionManager(get()) }
+    single { SessionManager(get(), get()) }
 
     //PRESENTATION LAYER
     viewModel { AppViewModel(get()) }
@@ -44,7 +43,6 @@ val appModule = module {
     //INFRASTRUCTURE LAYER
     single {
         createHttpClient(
-            get(),
             get(),
             "https://securetoken.googleapis.com/v1/token?key=AIzaSyCiiLh4Ak_46BVnKFqvpbL9IRx9AbRs1MU"
         )

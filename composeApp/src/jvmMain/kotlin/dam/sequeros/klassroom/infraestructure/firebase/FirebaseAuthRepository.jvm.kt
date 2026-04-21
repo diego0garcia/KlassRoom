@@ -44,13 +44,13 @@ actual class FirebaseAuthRepository actual constructor(
         }
 
         if (dataRequest.status.isSuccess()) {
-            val data: LoginDataResponse = dataRequest.body()
+            val data: FirestoreDocument = dataRequest.body()
             val user = UserAccount(
                 id = authResponse.localId,
-                displayName = data.fields.displayName?.stringValue ?: "Sin nombre",
-                email = authResponse.email ?: "johndoe@email.com",
-                profilePictureUrl = data.fields.profilePictureUrl?.stringValue,
-                role = UserRole.valueOf(data.fields.role?.stringValue ?: UserRole.TEACHER.name)
+                displayName = data.fields["displayName"]?.stringValue ?: "Sin nombre",
+                email = data.fields["email"]?.stringValue ?: authResponse.email ?: "",
+                profilePictureUrl = data.fields["profilePictureUrl"]?.stringValue,
+                role = UserRole.valueOf(data.fields["role"]?.stringValue ?: UserRole.TEACHER.name)
             )
             sessionManager.logIn(user, authResponse.idToken, authResponse.refreshToken)
             return user
