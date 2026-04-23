@@ -19,7 +19,7 @@ private val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
 private val subjects = listOf(
     "Matemáticas", "Lengua", "Física", "Inglés", "Historia", "Biología", "Arte", "Educación Física"
 )
-
+//Franja para crear intervalos
 private fun buildTimeSlots(startHour: Int, count: Int, intervalMinutes: Int): List<String> {
     return List(count) { index ->
         val totalMinutes = startHour * 60 + index * intervalMinutes
