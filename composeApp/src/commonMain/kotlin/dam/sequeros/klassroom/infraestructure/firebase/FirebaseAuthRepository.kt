@@ -8,7 +8,6 @@ import dam.sequeros.klassroom.domain.model.users.UserAccount
 import dam.sequeros.klassroom.domain.repository.IAuthRepository
 import io.ktor.client.HttpClient
 
-@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class FirebaseAuthRepository(
     sessionManager: SessionManager,
     client: HttpClient

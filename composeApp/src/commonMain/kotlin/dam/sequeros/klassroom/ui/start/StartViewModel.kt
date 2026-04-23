@@ -7,6 +7,7 @@ import dam.sequeros.klassroom.aplication.command.RegisterUserCommand
 import dam.sequeros.klassroom.aplication.usecase.LoginUserUseCase
 import dam.sequeros.klassroom.aplication.usecase.RegisterUserUseCase
 import dam.sequeros.klassroom.domain.SessionManager
+import dam.sequeros.klassroom.domain.model.users.UserAccount
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +23,10 @@ class StartViewModel(
     private val _state = MutableStateFlow(LoginState())
     val state: StateFlow<LoginState> = _state.asStateFlow()
     val isFormValid = MutableStateFlow(false)
+
+    fun updateState(state: LoginState){
+        _state.update { state }
+    }
 
     fun onUsernameChange(username: String) {
         var usernameError: String? = null
@@ -83,6 +88,12 @@ class StartViewModel(
             } finally {
                 _state.update { it.copy(isLoading = false) }
             }
+        }
+    }
+
+    fun onLogOut(){
+        viewModelScope.launch {
+            sessionManager.closeSession()
         }
     }
 }

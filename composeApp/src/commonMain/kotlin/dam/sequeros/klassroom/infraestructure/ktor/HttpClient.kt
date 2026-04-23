@@ -1,6 +1,5 @@
 package dam.sequeros.klassroom.infraestructure.ktor
 
-import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.infraestructure.TokenStorage
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -10,14 +9,13 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
-import io.ktor.http.*
 import io.ktor.client.request.forms.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
 
 fun createHttpClient(
     tokenStorage: TokenStorage,
-    sessionManager: SessionManager,
     refreshUrl:String
 ): HttpClient {
     return HttpClient {
@@ -84,7 +82,7 @@ fun createHttpClient(
                         val idToken = data["id_token"] ?: ""
 
                         tokenStorage.saveTokens( newRefresh, idToken)
-                        sessionManager.recoverSession()
+                        tokenStorage.saveTokens(newRefresh, idToken)
 
                         BearerTokens(idToken, newRefresh)
                     } else {

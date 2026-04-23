@@ -1,84 +1,94 @@
 package dam.sequeros.klassroom.ui.main.schedules.common
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-private val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
-private val subjects = listOf(
-    "Matemáticas", "Lengua", "Física", "Inglés", "Historia", "Biología", "Arte", "Educación Física"
-)
-//Franja para crear intervalos
-private fun buildTimeSlots(startHour: Int, count: Int, intervalMinutes: Int): List<String> {
-    return List(count) { index ->
-        val totalMinutes = startHour * 60 + index * intervalMinutes
-        val hour = totalMinutes / 60
-        val minute = totalMinutes % 60
-        "%02d:%02d".format(hour, minute)
-    }
-}
+import dam.sequeros.klassroom.domain.model.Subject
+import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ScheduleTable(
-    modifier: Modifier = Modifier,
-) {
-    val timeSlots = buildTimeSlots(startHour = 8, count = 8, intervalMinutes = 55)
+fun ScheduleTable() {
+    val vm: ScheduleViewModel = koinViewModel()
+    val subjects by vm.subjects.collectAsState()
+    val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
+
+    fun findSubject(day: Int, hour: Int, subjects: List<Subject>): Subject? {
+        return subjects.firstOrNull { subject ->
+            subject.weekDay == day && subject.startHour.split(":")[0].toInt() == hour
+        }
+    }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())
-            .padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = Modifier.fillMaxWidth(0.9f),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Row() {
             Text(
+                modifier = Modifier.width(100.dp),
                 text = "Hora",
                 fontWeight = FontWeight.Bold,
-                fontSize = 13.sp,
-                modifier = Modifier.width(80.dp)
             )
-            days.forEach { day ->
+
+            days.forEach {
                 Text(
-                    text = day,
+                    modifier = Modifier.weight(1f),
+                    text = it,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 13.sp,
-                    modifier = Modifier.weight(1f)
                 )
             }
         }
 
-        timeSlots.forEachIndexed { slotIndex, time ->
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = MaterialTheme.colorScheme.primary)
+                .padding(1.dp)
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        (8..15).forEach { hour ->
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier
+                    .border(width = 1.dp, Color.LightGray),
+                horizontalArrangement = Arrangement.Center,
             ) {
-                Text(
-                    text = time,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 12.sp,
-                    modifier = Modifier.width(80.dp)
-                )
-                days.forEachIndexed { dayIndex, _ ->
-                    Text(
-                        text = subjects[(slotIndex + dayIndex) % subjects.size],
-                        fontSize = 12.sp,
-                        modifier = Modifier.weight(1f)
-                    )
+                Row (
+                    modifier = Modifier.padding(10.dp)
+                ){
+                    Text("$hour:00", modifier = Modifier.width(100.dp))
+
+                    for (day in 1..5) {
+                        val subject = findSubject(day, hour, subjects)
+                        Text(
+                            text = subject?.name ?: "",
+                            modifier = Modifier.weight(1f),
+                            maxLines = 1,
+                            softWrap = false,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
