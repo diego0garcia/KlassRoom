@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -32,6 +33,7 @@ import dam.sequeros.klassroom.ui.main.home.common.UserInfo
 @Composable
 fun AdminPanelDesktopScreen(
     onAddUser: () -> Unit,
+    onAddSubject: () -> Unit,
 ) {
     Column (
         Modifier.fillMaxSize(),
@@ -67,6 +69,14 @@ fun AdminPanelDesktopScreen(
             icon = Icons.Default.Person2,
             text = "Añadir Usuario",
             onClick = onAddUser
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        AdminOptionButton(
+            icon = Icons.Default.School,
+            text = "Añadir Asignatura",
+            onClick = onAddSubject
         )
     }
 }

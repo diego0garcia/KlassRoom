@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import dam.sequeros.klassroom.ui.main.home.common.UserInfo
 @Composable
 fun AdminPanelMobilScreen(
     onAddUser: () -> Unit,
+    onAddSubject: () -> Unit,
 ) {
     Column (
         Modifier.fillMaxSize(),
@@ -60,6 +62,14 @@ fun AdminPanelMobilScreen(
             icon = Icons.Default.Person2,
             text = "Añadir Usuario",
             onClick = onAddUser
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        AdminOptionButton(
+            icon = Icons.Default.School,
+            text = "Añadir Asignatura",
+            onClick = onAddSubject
         )
     }
 }

@@ -1,6 +1,7 @@
 package dam.sequeros.klassroom.di
 
 import dam.sequeros.klassroom.AppViewModel
+import dam.sequeros.klassroom.aplication.usecase.AddSubjectUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetSubjectsUseCase
 import dam.sequeros.klassroom.aplication.usecase.LoginUserUseCase
 import dam.sequeros.klassroom.aplication.usecase.RegisterUserUseCase
@@ -14,6 +15,7 @@ import dam.sequeros.klassroom.infraestructure.firebase.FirebaseScheduleRepositor
 import dam.sequeros.klassroom.infraestructure.ktor.createHttpClient
 import dam.sequeros.klassroom.ui.main.MainViewModel
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
+import dam.sequeros.klassroom.ui.main.admin.addsubject.SubjectViewModel
 import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
 import dam.sequeros.klassroom.ui.start.StartViewModel
 import org.koin.core.module.dsl.viewModel
@@ -31,10 +33,12 @@ val appModule = module {
     viewModel { MainViewModel() }
     viewModel { AdminPanelViewModel(get()) }
     viewModel { ScheduleViewModel(get(), get()) }
+    viewModel { SubjectViewModel(get()) }
 
     factory { LoginUserUseCase(get()) }
     factory { RegisterUserUseCase(get()) }
     factory { GetSubjectsUseCase(get()) }
+    factory { AddSubjectUseCase(get()) }
 
     //DOMAIN LAYER
     single <IAuthRepository>{ FirebaseAuthRepository(get(), get()) }
