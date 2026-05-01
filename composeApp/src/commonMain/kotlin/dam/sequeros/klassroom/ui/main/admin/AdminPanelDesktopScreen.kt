@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dam.sequeros.klassroom.ui.common.CustomOptionButton
 import dam.sequeros.klassroom.ui.main.admin.common.AdminOptionButton
 import dam.sequeros.klassroom.ui.main.home.common.UserInfo
 
@@ -46,7 +48,7 @@ fun AdminPanelDesktopScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Panel de administrador",
+                text = "Admin Panel",
                 fontWeight = FontWeight.Bold,
                 fontSize = 35.sp
             )
@@ -58,14 +60,14 @@ fun AdminPanelDesktopScreen(
             modifier = Modifier
                 .fillMaxWidth(0.9f)
                 .height(2.dp)
-                .background(Color.Black)
+                .background(MaterialTheme.colorScheme.primary)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        AdminOptionButton(
-            icon = Icons.Default.Person2,
-            text = "Añadir Usuario",
+        CustomOptionButton(
+            icon = Icons.Default.PersonAdd,
+            text = "Add User",
             onClick = onAddUser
         )
     }

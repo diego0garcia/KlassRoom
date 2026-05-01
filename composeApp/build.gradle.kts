@@ -77,6 +77,12 @@ kotlin {
             //LAMACENAMIENTO SEGURO TOKEN
             implementation("com.russhwolf:multiplatform-settings:1.3.0")
 
+            //SELECCIONAR IMAGENES
+            implementation("io.github.vinceglb:filekit-core:0.13.0")
+            implementation("io.github.vinceglb:filekit-dialogs:0.13.0")
+            implementation("io.github.vinceglb:filekit-dialogs-compose:0.13.0")
+            implementation("io.github.vinceglb:filekit-coil:0.13.0")
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

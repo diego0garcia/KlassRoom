@@ -77,6 +77,26 @@ fun MainDesktopScreen(
                 )
             )
 
+            //SCHEDULES
+            if (user?.role == UserRole.TEACHER || user?.role == UserRole.ADMIN) {
+                NavigationRailItem(
+                    icon = { Icon(imageVector = Icons.Default.Schedule, contentDescription = "Schedules") },
+                    selected = currentRoute == MainRoutes.Schedules,
+                    onClick = {
+                        navController.navigate(route = MainRoutes.Schedules) {
+                            launchSingleTop = true
+                        }
+                    },
+                    colors = NavigationRailItemDefaults.colors(
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = Color.Gray,
+                        unselectedTextColor = Color.Gray,
+                        indicatorColor = Color.Transparent
+                    )
+                )
+            }
+
             //PROFILE
             NavigationRailItem(
                 icon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Profile") },
@@ -102,26 +122,6 @@ fun MainDesktopScreen(
                     selected = currentRoute == MainRoutes.AdminPanel,
                     onClick = {
                         navController.navigate(route = MainRoutes.AdminPanel) {
-                            launchSingleTop = true
-                        }
-                    },
-                    colors = NavigationRailItemDefaults.colors(
-                        selectedIconColor = MaterialTheme.colorScheme.primary,
-                        selectedTextColor = MaterialTheme.colorScheme.primary,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray,
-                        indicatorColor = Color.Transparent
-                    )
-                )
-            }
-
-            //SCHEDULES
-            if (user?.role == UserRole.TEACHER || user?.role == UserRole.ADMIN) {
-                NavigationRailItem(
-                    icon = { Icon(imageVector = Icons.Default.Schedule, contentDescription = "Schedules") },
-                    selected = currentRoute == MainRoutes.Schedules,
-                    onClick = {
-                        navController.navigate(route = MainRoutes.Schedules) {
                             launchSingleTop = true
                         }
                     },

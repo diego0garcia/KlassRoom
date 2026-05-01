@@ -14,6 +14,7 @@ import dam.sequeros.klassroom.infraestructure.firebase.FirebaseScheduleRepositor
 import dam.sequeros.klassroom.infraestructure.ktor.createHttpClient
 import dam.sequeros.klassroom.ui.main.MainViewModel
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
+import dam.sequeros.klassroom.ui.main.profile.ProfileViewModel
 import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
 import dam.sequeros.klassroom.ui.start.StartViewModel
 import org.koin.core.module.dsl.viewModel
@@ -31,6 +32,7 @@ val appModule = module {
     viewModel { MainViewModel() }
     viewModel { AdminPanelViewModel(get()) }
     viewModel { ScheduleViewModel(get(), get()) }
+    viewModel { ProfileViewModel() }
 
     factory { LoginUserUseCase(get()) }
     factory { RegisterUserUseCase(get()) }

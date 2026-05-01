@@ -61,6 +61,26 @@ fun MainMobilScreen(
                     )
                 )
 
+                //SCHEDULES
+                if (user?.role == UserRole.TEACHER || user?.role == UserRole.ADMIN) {
+                    NavigationBarItem(
+                        icon = { Icon(imageVector = Icons.Default.Schedule, contentDescription = "Schedules") },
+                        selected = currentRoute == MainRoutes.Schedules,
+                        onClick = {
+                            navController.navigate(route = MainRoutes.Schedules) {
+                                launchSingleTop = true
+                            }
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            selectedTextColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = Color.Transparent
+                        )
+                    )
+                }
+
                 //PROFILE
                 NavigationBarItem(
                     icon = { Icon(imageVector = Icons.Default.Person, contentDescription = "Profile") },
@@ -90,26 +110,6 @@ fun MainMobilScreen(
                             }
                         },
                         colors = NavigationRailItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.primary,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray,
-                            indicatorColor = Color.Transparent
-                        )
-                    )
-                }
-
-                //SCHEDULES
-                if (user?.role == UserRole.TEACHER || user?.role == UserRole.ADMIN) {
-                    NavigationBarItem(
-                        icon = { Icon(imageVector = Icons.Default.Schedule, contentDescription = "Schedules") },
-                        selected = currentRoute == MainRoutes.Schedules,
-                        onClick = {
-                            navController.navigate(route = MainRoutes.Schedules) {
-                                launchSingleTop = true
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = MaterialTheme.colorScheme.primary,
                             selectedTextColor = MaterialTheme.colorScheme.primary,
                             unselectedIconColor = Color.Gray,

@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -29,66 +30,88 @@ fun ScheduleTable() {
     val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
 
     fun findSubject(day: Int, hour: Int, subjects: List<Subject>): Subject? {
-        return subjects.firstOrNull { subject ->
-            subject.weekDay == day && subject.startHour.split(":")[0].toInt() == hour
+        return subjects.firstOrNull {
+            it.weekDay == day && it.startHour.split(":")[0].toInt() == hour
         }
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(0.9f),
-        verticalArrangement = Arrangement.Center,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row() {
-            Text(
-                modifier = Modifier.width(100.dp),
-                text = "Hora",
-                fontWeight = FontWeight.Bold,
-            )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+        ) {
+            Text("Hora", modifier = Modifier.width(80.dp), fontWeight = FontWeight.Bold)
 
             days.forEach {
-                Text(
-                    modifier = Modifier.weight(1f),
-                    text = it,
-                    fontWeight = FontWeight.Bold,
-                )
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 4.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = it,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.primary)
-                .padding(1.dp)
-        )
+        (8..15).forEachIndexed { index, hour ->
 
-        Spacer(modifier = Modifier.height(10.dp))
+            val backgroundColor =
+                if (index % 2 == 0) MaterialTheme.colorScheme.surface
+                else MaterialTheme.colorScheme.surfaceVariant
 
-        (8..15).forEach { hour ->
             Row(
                 modifier = Modifier
-                    .border(width = 1.dp, Color.LightGray),
-                horizontalArrangement = Arrangement.Center,
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .clip(MaterialTheme.shapes.medium)
+                    .background(backgroundColor)
+                    .padding(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row (
-                    modifier = Modifier.padding(10.dp)
-                ){
-                    Text("$hour:00", modifier = Modifier.width(100.dp))
 
-                    for (day in 1..5) {
-                        val subject = findSubject(day, hour, subjects)
+                Text(
+                    "$hour:00",
+                    modifier = Modifier.width(80.dp),
+                    fontWeight = FontWeight.SemiBold
+                )
+
+                for (day in 1..5) {
+                    val subject = findSubject(day, hour, subjects)
+
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 4.dp)
+                            .clip(MaterialTheme.shapes.small)
+                            .background(
+                                if (subject != null)
+                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                                else Color.Transparent
+                            )
+                            .padding(6.dp),
+                        contentAlignment = Alignment.Center
+
+                    ) {
                         Text(
-                            text = subject?.name ?: "",
-                            modifier = Modifier.weight(1f),
+                            text = subject?.name ?: "-",
                             maxLines = 1,
-                            softWrap = false,
                             overflow = TextOverflow.Ellipsis,
+                            fontSize = 13.sp
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
