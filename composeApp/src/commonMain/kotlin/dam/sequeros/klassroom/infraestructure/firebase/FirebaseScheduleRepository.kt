@@ -1,5 +1,6 @@
 package dam.sequeros.klassroom.infraestructure.firebase
 
+import dam.sequeros.klassroom.aplication.command.AddSubjectCommand
 import dam.sequeros.klassroom.aplication.command.GetSubjectsCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.model.Subject
@@ -11,4 +12,5 @@ expect class FirebaseScheduleRepository(
     client: HttpClient
 ) : IScheduleRepository {
     override suspend fun getSubjects(command: GetSubjectsCommand): List<Subject>
+    override suspend fun addSubject(command: AddSubjectCommand): Boolean
 }

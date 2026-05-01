@@ -1,5 +1,6 @@
 package dam.sequeros.klassroom.infraestructure.firebase
 
+import dam.sequeros.klassroom.aplication.command.AddSubjectCommand
 import dam.sequeros.klassroom.aplication.command.GetSubjectsCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.model.Subject
@@ -7,6 +8,7 @@ import dam.sequeros.klassroom.domain.repository.IScheduleRepository
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import io.ktor.http.*
 
 actual class FirebaseScheduleRepository actual constructor(
     private val sessionManager: SessionManager,
@@ -50,6 +52,32 @@ actual class FirebaseScheduleRepository actual constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             emptyList()
+        }
+    }
+
+    actual override suspend fun addSubject(command: AddSubjectCommand): Boolean {
+        return try {
+            val firestoreData = mapOf(
+                "fields" to mapOf(
+                    "teacherId" to mapOf("stringValue" to command.teacherId),
+                    "name" to mapOf("stringValue" to command.name),
+                    "weekDay" to mapOf("integerValue" to command.weekDay.toString()),
+                    "startHour" to mapOf("stringValue" to command.startHour),
+                    "endHour" to mapOf("stringValue" to command.endHour)
+                )
+            )
+            val dataRequest = client.post(
+                urlString = "https://firestore.googleapis.com/v1/projects/${DesktopFirebaseConfig.projectId}/databases/(default)/documents/subjects?documentId=${command.id}"
+            ) {
+                headers {
+                    append("Authorization", "Bearer ${sessionManager.idToken.value}")
+                }
+                setBody(firestoreData)
+            }
+            dataRequest.status.isSuccess()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
         }
     }
 }
