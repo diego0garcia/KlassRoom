@@ -3,8 +3,10 @@ package dam.sequeros.klassroom.ui.main.admin
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Grade
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Subject
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +20,9 @@ import dam.sequeros.klassroom.ui.common.CustomOptionButton
 @Composable
 fun AdminPanelDesktopScreen(
     onAddUser: () -> Unit,
+    onAddCurse: () -> Unit,
     onAddSubject: () -> Unit,
+    onEnrollStudent: () -> Unit,
 ) {
     Column (
         Modifier.fillMaxSize(),
@@ -59,9 +63,25 @@ fun AdminPanelDesktopScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         CustomOptionButton(
-            icon = Icons.Default.School,
-            text = "Añadir Asignatura",
+            icon = Icons.Default.Grade,
+            text = "Add Curse",
+            onClick = onAddCurse
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        CustomOptionButton(
+            icon = Icons.Default.Subject,
+            text = "Add Subject",
             onClick = onAddSubject
+        )
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        CustomOptionButton(
+            icon = Icons.Default.School,
+            text = "Enroll Student",
+            onClick = onEnrollStudent
         )
     }
 }

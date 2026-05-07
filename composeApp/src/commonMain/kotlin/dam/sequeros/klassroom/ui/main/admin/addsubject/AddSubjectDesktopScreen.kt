@@ -51,7 +51,7 @@ fun AddSubjectDesktopScreen(
                 .fillMaxWidth()
                 .padding(horizontal = 30.dp),
         ) {
-            SubjectForm(vm = vm)
+            SubjectForm()
 
             Spacer(modifier = Modifier.height(8.dp))
 

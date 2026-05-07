@@ -5,7 +5,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Subject(
     val id: String,
-    val teacherId: String,
+    val curseId: String?,
+    val teacherId: String?,
     val name: String,
     val weekDay: Int,
     val startHour: String,

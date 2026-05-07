@@ -8,22 +8,26 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dam.sequeros.klassroom.domain.AppSettings
 import dam.sequeros.klassroom.ui.main.MainViewModel
+import dam.sequeros.klassroom.ui.main.admin.addcurse.AddCurseDesktopScreen
+import dam.sequeros.klassroom.ui.main.admin.addcurse.AddCurseMobilScreen
 import dam.sequeros.klassroom.ui.main.admin.addsubject.AddSubjectDesktopScreen
 import dam.sequeros.klassroom.ui.main.admin.addsubject.AddSubjectMobilScreen
 import dam.sequeros.klassroom.ui.main.admin.adduser.AddUserDesktopScreen
 import dam.sequeros.klassroom.ui.main.admin.adduser.AddUserMobilScreen
+import dam.sequeros.klassroom.ui.main.admin.enrollStudient.EnrollStudentDesktopScreen
+import dam.sequeros.klassroom.ui.main.admin.enrollStudient.EnrollStudentMobilScreen
 import org.koin.compose.koinInject
 
 @Composable
-fun AdminPanelComponent(
-
-) {
-    val vm: MainViewModel = koinInject();    val appSettings: AppSettings = koinInject()
+fun AdminPanelComponent() {
+    val appSettings: AppSettings = koinInject()
     val screenSize by appSettings.screenSize.collectAsState()
     val navController = rememberNavController()
 
     fun onAddUser(){ navController.navigate(AdminRoutes.AddUser) }
+    fun onAddCurse(){ navController.navigate(AdminRoutes.AddCurse) }
     fun onAddSubject(){ navController.navigate(AdminRoutes.AddSubject) }
+    fun onEnrollStudent(){ navController.navigate(AdminRoutes.EnrollStudent) }
     fun onBack(){ navController.popBackStack() }
 
     NavHost(
@@ -34,12 +38,16 @@ fun AdminPanelComponent(
             if (screenSize) {
                 AdminPanelDesktopScreen(
                     onAddUser = { onAddUser() },
-                    onAddSubject = { onAddSubject() }
+                    onAddCurse = { onAddCurse() },
+                    onAddSubject = { onAddSubject() },
+                    onEnrollStudent = { onEnrollStudent() }
                 )
             } else {
                 AdminPanelMobilScreen(
                     onAddUser = { onAddUser() },
-                    onAddSubject = { onAddSubject() }
+                    onAddCurse = { onAddCurse() },
+                    onAddSubject = { onAddSubject() },
+                    onEnrollStudent = { onEnrollStudent() }
                 )
             }
         }
@@ -56,6 +64,18 @@ fun AdminPanelComponent(
             }
         }
 
+        composable(AdminRoutes.AddCurse) {
+            if (screenSize) {
+                AddCurseDesktopScreen(
+                    onBack = { onBack() }
+                )
+            } else {
+                AddCurseMobilScreen (
+                    onBack = { onBack() }
+                )
+            }
+        }
+
         composable(AdminRoutes.AddSubject) {
             if (screenSize) {
                 AddSubjectDesktopScreen(
@@ -63,6 +83,18 @@ fun AdminPanelComponent(
                 )
             } else {
                 AddSubjectMobilScreen(
+                    onBack = { onBack() }
+                )
+            }
+        }
+
+        composable(AdminRoutes.EnrollStudent) {
+            if (screenSize) {
+                EnrollStudentDesktopScreen(
+                    onBack = { onBack() }
+                )
+            } else {
+                EnrollStudentMobilScreen (
                     onBack = { onBack() }
                 )
             }

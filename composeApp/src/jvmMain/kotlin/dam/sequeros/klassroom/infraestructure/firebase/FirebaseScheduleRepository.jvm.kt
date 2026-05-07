@@ -42,7 +42,8 @@ actual class FirebaseScheduleRepository actual constructor(
                     Subject(
                         id = data.name.substringAfterLast("/"),
                         name = data.fields["name"]?.stringValue ?: "",
-                        teacherId = data.fields["teacherId"]?.stringValue ?: "",
+                        curseId = data.fields["curseId"]?.stringValue ?: "",
+                        teacherId = data.fields["teacherId"]?.stringValue,
                         startHour = data.fields["startHour"]?.stringValue ?: "",
                         endHour = data.fields["endHour"]?.stringValue ?: "",
                         weekDay = data.fields["weekDay"]?.integerValue?.toIntOrNull() ?: 0
