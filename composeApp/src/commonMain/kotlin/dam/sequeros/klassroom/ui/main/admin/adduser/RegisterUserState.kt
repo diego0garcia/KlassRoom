@@ -2,7 +2,7 @@ package dam.sequeros.klassroom.ui.main.admin.adduser
 
 import dam.sequeros.klassroom.domain.model.users.UserRole
 
-data class RegisterState(
+data class RegisterUserState(
     val username: String = "",
     val email: String = "",
     val password: String = "",

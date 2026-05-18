@@ -15,13 +15,14 @@ import dam.sequeros.klassroom.domain.model.users.UserRole
 import dam.sequeros.klassroom.ui.common.CustomTextField
 import dam.sequeros.klassroom.ui.common.RadioButton
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
+import dam.sequeros.klassroom.ui.main.admin.adduser.AddUserViewModel
 
 @Composable
 fun RegisterForm(
     vm: ViewModel,
 ) {
-    val vm = vm as AdminPanelViewModel
-    val state by vm.state.collectAsState()
+    val vm = vm as AddUserViewModel
+    val state by vm.registerUserState.collectAsState()
     val roleList =
         mapOf(
             "User" to UserRole.USER,

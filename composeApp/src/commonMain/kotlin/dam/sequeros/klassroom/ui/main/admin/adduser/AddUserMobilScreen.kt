@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
 import dam.sequeros.klassroom.ui.main.admin.adduser.common.OptionHeader
 import dam.sequeros.klassroom.ui.main.admin.adduser.common.RegisterForm
-import dam.sequeros.klassroom.ui.main.home.common.UserInfo
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -34,8 +33,8 @@ fun AddUserMobilScreen(
     onBack: () -> Unit,
 ) {
 
-    val vm: AdminPanelViewModel = koinViewModel()
-    val state by vm.state.collectAsState()
+    val vm: AddUserViewModel = koinViewModel()
+    val state by vm.registerUserState.collectAsState()
     val scrollState = rememberScrollState()
 
     Column(

@@ -3,7 +3,10 @@ package dam.sequeros.klassroom.infraestructure.firebase
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class FirestoreResponse(val documents: List<FirestoreDocument>? = null)
+data class FirestoreResponse(
+    val documents: List<FirestoreDocument>? = null,
+    val nextPageToken: String? = null
+)
 
 @Serializable
 data class FirestoreDocument(val name: String, val fields: Map<String, FirestoreValue>)

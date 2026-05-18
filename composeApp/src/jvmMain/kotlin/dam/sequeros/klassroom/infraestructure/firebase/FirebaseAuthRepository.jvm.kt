@@ -38,7 +38,7 @@ actual class FirebaseAuthRepository actual constructor(
         //PEDIMOS LOS DATOS DEL USUARIO AHORA
         val authResponse: LoginAuthResponse = authRequest.body()
         val dataRequest = client.get(
-            urlString = "https://firestore.googleapis.com/v1/projects/${DesktopFirebaseConfig.projectId}/databases/(default)/documents/users/${authResponse.localId}"
+            urlString = "https://firestore.googleapis.com/v1/projects/${DesktopFirebaseConfig.projectId}/databases/(default)/documents/users/${authResponse.localId}?pageSize=300"
         ) {
             headers.append("Authorization", "Bearer ${authResponse.idToken}")
         }
