@@ -14,6 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -23,8 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import dam.sequeros.klassroom.domain.AppSettings
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.ui.common.CustomOptionButton
+import dam.sequeros.klassroom.ui.common.CustomTextField
 import dam.sequeros.klassroom.ui.common.Tag
 import klassroom.composeapp.generated.resources.Res
 import klassroom.composeapp.generated.resources.profile_example_light
@@ -38,8 +43,18 @@ fun ProfileDesktopScreen(
 ) {
     val vm: ProfileViewModel = koinViewModel()
     val sessionManager: SessionManager = koinInject()
+    val appSettings: AppSettings = koinInject()
     val userAccount by sessionManager.currentUserAccount.collectAsState()
+    val isDarkMode by appSettings.isDarkMode.collectAsState()
     val scrollState = rememberScrollState()
+    var showMoreInfoDialog by remember { mutableStateOf(false) }
+    var showGeneralSettings by remember { mutableStateOf(false) }
+    var showAccountSettings by remember { mutableStateOf(false) }
+    var showHelpDialog by remember { mutableStateOf(false) }
+    var accountName by remember(userAccount) { mutableStateOf(userAccount?.displayName ?: "") }
+    var accountEmail by remember(userAccount) { mutableStateOf(userAccount?.email ?: "") }
+    var newPassword by remember { mutableStateOf("") }
+    var accountMessage by remember { mutableStateOf<String?>(null) }
 
     Column(
         modifier = Modifier
@@ -153,11 +168,171 @@ fun ProfileDesktopScreen(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
             )
 
-            CustomOptionButton(text = "General Settings", icon = Icons.Default.Settings, onClick = { })
-            CustomOptionButton(text = "More Information", icon = Icons.Default.Info, onClick = { })
-            CustomOptionButton(text = "Account Settings", icon = Icons.Default.Person, onClick = { })
-            CustomOptionButton(text = "Help", icon = Icons.AutoMirrored.Filled.HelpOutline, onClick = { })
+            CustomOptionButton(text = "General Settings", icon = Icons.Default.Settings, onClick = { showGeneralSettings = true })
+            CustomOptionButton(text = "More Information", icon = Icons.Default.Info, onClick = { showMoreInfoDialog = true })
+            CustomOptionButton(text = "Account Settings", icon = Icons.Default.Person, onClick = { showAccountSettings = true })
+            CustomOptionButton(text = "Help", icon = Icons.AutoMirrored.Filled.HelpOutline, onClick = { showHelpDialog = true })
 
+            if (showMoreInfoDialog) {
+                AlertDialog(
+                    onDismissRequest = { showMoreInfoDialog = false },
+                    title = {
+                        Text(text = "More Information")
+                    },
+                    text = {
+                        Text(text = "Desarrollado por José y Diego")
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showMoreInfoDialog = false }) {
+                            Text(text = "Cerrar")
+                        }
+                    }
+                )
+            }
+
+            if (showGeneralSettings) {
+                AlertDialog(
+                    onDismissRequest = { showGeneralSettings = false },
+                    title = {
+                        Text(text = "General Settings")
+                    },
+                    text = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = if (isDarkMode) "Modo Oscuro" else "Modo Claro",
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    fontSize = 14.sp
+                                )
+                                Switch(
+                                    checked = isDarkMode,
+                                    onCheckedChange = { appSettings.setTheme(it) }
+                                )
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showGeneralSettings = false }) {
+                            Text(text = "Cerrar")
+                        }
+                    }
+                )
+            }
+
+            if (showAccountSettings) {
+                AlertDialog(
+                    onDismissRequest = { showAccountSettings = false },
+                    title = {
+                        Text(text = "Account Settings")
+                    },
+                    text = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            CustomTextField(
+                                header = "Nombre de usuario",
+                                value = accountName,
+                                onValueChange = { accountName = it },
+                                error = null
+                            )
+                            CustomTextField(
+                                header = "Email",
+                                value = accountEmail,
+                                onValueChange = { accountEmail = it },
+                                error = null
+                            )
+                            CustomTextField(
+                                header = "Nueva contraseña",
+                                value = newPassword,
+                                onValueChange = { newPassword = it },
+                                error = null,
+                                isPassword = true
+                            )
+                            accountMessage?.let {
+                                Text(
+                                    text = it,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            val nameTrim = accountName.trim()
+                            val emailTrim = accountEmail.trim()
+                            if (userAccount != null && nameTrim.isNotBlank() && emailTrim.isNotBlank()) {
+                                sessionManager.setCurrentUser(
+                                    userAccount!!.copy(
+                                        displayName = nameTrim,
+                                        email = emailTrim
+                                    )
+                                )
+                                accountMessage = "Nombre y email actualizados localmente"
+                                if (newPassword.isNotBlank()) {
+                                    accountMessage = "Contraseña no se puede cambiar en esta versión"
+                                }
+                            } else {
+                                accountMessage = "Nombre y email no pueden estar vacíos"
+                            }
+                        }) {
+                            Text(text = "Guardar")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showAccountSettings = false
+                            accountMessage = null
+                        }) {
+                            Text(text = "Cancelar")
+                        }
+                    }
+                )
+            }
+
+            if (showHelpDialog) {
+                AlertDialog(
+                    onDismissRequest = { showHelpDialog = false },
+                    title = {
+                        Text(text = "Help")
+                    },
+                    text = {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "1. Completa tu perfil",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "2. Revisa tu horario",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 14.sp
+                            )
+                            Text(
+                                text = "3. Contacta con tus profesores",
+                                color = MaterialTheme.colorScheme.onBackground,
+                                fontSize = 14.sp
+                            )
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showHelpDialog = false }) {
+                            Text(text = "Cerrar")
+                        }
+                    }
+                )
+            }
 
             Spacer(Modifier.height(25.dp))
 
