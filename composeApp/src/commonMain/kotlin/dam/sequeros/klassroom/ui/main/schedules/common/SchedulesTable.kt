@@ -22,10 +22,11 @@ import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ScheduleTable() {
+fun ScheduleTable(
+    days: List<String>,
+) {
     val vm: ScheduleViewModel = koinViewModel()
     val subjects by vm.subjects.collectAsState()
-    val days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
 
     fun findSubject(day: Int, hour: Int, subjects: List<Subject>): Subject? {
         return subjects.firstOrNull {
@@ -105,7 +106,7 @@ fun ScheduleTable() {
                     ) {
                         Text(
                             text = subject?.name ?: "-",
-                            maxLines = 1,
+                            maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                             fontSize = 13.sp
                         )

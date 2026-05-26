@@ -63,12 +63,14 @@ fun HomeMobilScreen(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     items(courseList) { course ->
-                        CardModule(
-                            onClick = {
-                                onClickModule(course)
-                            },
-                            course = course,
-                        )
+                        if (!course.subjects.isEmpty()) {
+                            CardModule(
+                                onClick = {
+                                    onClickModule(course)
+                                },
+                                course = course,
+                            )
+                        }
                     }
                 }
             }

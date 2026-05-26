@@ -10,8 +10,36 @@ actual class FirebaseAdminRepository actual constructor(
     private val sessionManager: SessionManager,
     private val client: HttpClient
 ) : IAdminRepository {
-    actual override suspend fun addCourse(command: AddCurseCommand) {
-        TODO("Por hacer aun")
+    actual override suspend fun addCourse(command: AddCurseCommand): Boolean {
+        return try {
+            val courseData = mapOf(
+                "fields" to mapOf(
+                    "id" to mapOf("stringValue" to command.id),
+                    "name" to mapOf("stringValue" to command.name),
+                )
+            )
+
+            sessionManager.db.collection("courses").document(command.id).set(courseData)
+
+            for (subject in command.list){
+                addSubject(
+                    AddSubjectCommand(
+                        subject.id,
+                        subject.teacherId,
+                        subject.name,
+                        subject.weekDay,
+                        subject.startHour,
+                        subject.endHour
+                    )
+                )
+            }
+
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+
     }
 
     actual override suspend fun addSubject(command: AddSubjectCommand): Boolean {

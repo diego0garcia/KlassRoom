@@ -15,6 +15,8 @@ fun SchedulesDesktopScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ScheduleHeader()
-        ScheduleTable()
+        ScheduleTable(
+            days = listOf("Lunes", "Martes", "Miércoles", "Jueves", "Viernes")
+        )
     }
 }
