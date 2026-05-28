@@ -1,6 +1,7 @@
 package dam.sequeros.klassroom.infraestructure.firebase
 
 import dam.sequeros.klassroom.aplication.command.AddCurseCommand
+import dam.sequeros.klassroom.domain.model.Course
 import dam.sequeros.klassroom.aplication.command.AddSubjectCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.repository.IAdminRepository
@@ -11,6 +12,11 @@ actual class FirebaseAdminRepository actual constructor(
     private val client: HttpClient
 ) : IAdminRepository {
     actual override suspend fun addCourse(command: AddCurseCommand): Boolean {
+        return false
+    }
+
+    actual override suspend fun getCourses(): List<Course> {
+        return emptyList()
         return try {
             val courseData = mapOf(
                 "fields" to mapOf(

@@ -1,11 +1,14 @@
 package dam.sequeros.klassroom.ui.main.admin.enrollStudient
 
+import dam.sequeros.klassroom.domain.model.Course
+
 data class EnrollStudentState(
     val name: String = "",
     val email: String = "",
     val phone: String = "",
     val dni: String = "",
     val curseId: String = "",
+    val courses: List<Course> = emptyList(),
 
     val isLoading: Boolean = false,
     val isRegisterSuccess: Boolean = false,

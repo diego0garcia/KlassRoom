@@ -1,11 +1,14 @@
 package dam.sequeros.klassroom.infraestructure.firebase
 
 import dam.sequeros.klassroom.aplication.command.AddCurseCommand
+import dam.sequeros.klassroom.domain.model.Course
 import dam.sequeros.klassroom.aplication.command.AddSubjectCommand
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.model.Subject
 import dam.sequeros.klassroom.domain.repository.IAdminRepository
+import dam.sequeros.klassroom.infraestructure.firebase.FirestoreResponse
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlin.uuid.ExperimentalUuidApi
@@ -46,6 +49,29 @@ actual class FirebaseAdminRepository actual constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }
+    }
+
+    actual override suspend fun getCourses(): List<Course> {
+        return try {
+            val response: FirestoreResponse = client.get(
+                urlString = "https://firestore.googleapis.com/v1/projects/${DesktopFirebaseConfig.projectId}/databases/(default)/documents/courses"
+            ) {
+                headers {
+                    append("Authorization", "Bearer ${sessionManager.idToken.value}")
+                }
+            }.body()
+
+            response.documents?.mapNotNull { document ->
+                Course(
+                    id = document.name.substringAfterLast("/"),
+                    name = document.fields["name"]?.stringValue ?: "",
+                    subjects = emptyList()
+                )
+            } ?: emptyList()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
         }
     }
 

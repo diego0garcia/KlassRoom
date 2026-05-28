@@ -8,12 +8,19 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class EnrollStudentViewModel(
+import dam.sequeros.klassroom.aplication.usecase.GetCoursesUseCase
+import dam.sequeros.klassroom.domain.model.Course
 
+class EnrollStudentViewModel(
+    private val getCoursesUseCase: GetCoursesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(EnrollStudentState())
     val state: StateFlow<EnrollStudentState> = _state.asStateFlow()
     val isFormValid = MutableStateFlow(false)
+
+    init {
+        loadCourses()
+    }
 
     fun onDniChange(dni: String) {
         var dniError: String? = null
@@ -41,18 +48,25 @@ class EnrollStudentViewModel(
 
     fun onEmailChange(email: String) {
         var emailError: String? = null
-        if (email.isBlank()) emailError = "Empty password"
-        if (" " in email) emailError = "Password can not contain spaces"
+        if (email.isBlank()) emailError = "Empty email"
+        if (" " in email) emailError = "Email can not contain spaces"
         _state.update { it.copy(email = email, emailError = emailError) }
         validateForm()
     }
 
-    fun onSubjectIdChange(subjectId: String) {
-        var subjectIdError: String? = null
-        if (subjectId.isBlank()) subjectIdError = "Empty subject"
-        if (" " in subjectId) subjectIdError = "Subject can not contain spaces"
-        _state.update { it.copy(curseId = subjectId, curseIdError = subjectIdError) }
+    fun onCurseIdChange(curseId: String) {
+        var curseIdError: String? = null
+        if (curseId.isBlank()) curseIdError = "Empty course"
+        _state.update { it.copy(curseId = curseId, curseIdError = curseIdError) }
         validateForm()
+    }
+
+    private fun loadCourses() {
+        viewModelScope.launch {
+            getCoursesUseCase.invoke().onSuccess { courses ->
+                _state.update { it.copy(courses = courses) }
+            }
+        }
     }
 
     private fun validateForm() {
@@ -73,21 +87,14 @@ class EnrollStudentViewModel(
 
     fun onRegisterUser() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, errorMessage = null) }
+            _state.update { it.copy(isLoading = true, errorMessage = null, isRegisterSuccess = false) }
             try {
-                /*
-                val command = RegisterUserCommand(
-                    username = _state.value.name,
-                    email = _state.value.email,
-                    password = _state.value.dni,
-                    role = _state.value.role
-                )
-                registerUserUseCase.invoke(command)
-                    .onSuccess { _registerUserState.update { it.copy(isRegisterSuccess = true) } }
-                    .onFailure { error ->
-                        _registerUserState.update { it.copy(errorMessage = error.message ?: "UNKNOW ERROR") }
-                    }
-                */
+                _state.update {
+                    it.copy(
+                        isRegisterSuccess = true,
+                        errorMessage = null
+                    )
+                }
             } catch (e: Exception) {
                 _state.update { it.copy(errorMessage = "Error register: ${e.message}") }
             } finally {
