@@ -4,6 +4,7 @@ import dam.sequeros.klassroom.AppViewModel
 import dam.sequeros.klassroom.aplication.usecase.AddCurseUseCase
 import dam.sequeros.klassroom.aplication.usecase.AddSubjectUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetAllTeachersUseCase
+import dam.sequeros.klassroom.aplication.usecase.GetCoursesUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetSubjectsUseCase
 import dam.sequeros.klassroom.aplication.usecase.LoginUserUseCase
 import dam.sequeros.klassroom.aplication.usecase.RegisterUserUseCase
@@ -46,7 +47,7 @@ val appModule = module {
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { SubjectViewModel(get()) }
     viewModel { ProfileViewModel() }
-    viewModel { EnrollStudentViewModel() }
+    viewModel { EnrollStudentViewModel(get()) }
     viewModel { CurseViewModel(get(), get()) }
 
     factory { LoginUserUseCase(get()) }
@@ -55,6 +56,7 @@ val appModule = module {
     factory { AddSubjectUseCase(get()) }
     factory { AddCurseUseCase(get()) }
     factory { GetAllTeachersUseCase(get()) }
+    factory { GetCoursesUseCase(get()) }
 
     //DOMAIN LAYER
     single <IAuthRepository>{ FirebaseAuthRepository(get(), get()) }

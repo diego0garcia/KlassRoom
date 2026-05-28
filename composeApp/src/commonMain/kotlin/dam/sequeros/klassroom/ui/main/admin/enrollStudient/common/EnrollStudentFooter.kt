@@ -46,7 +46,7 @@ fun EnrollStudentFooter(){
 
         if (state.isRegisterSuccess) {
             Text(
-                text = "Registrado con éxito",
+                text = "Registrado con éxito en el curso ${state.curseId}",
                 fontWeight = FontWeight.Bold,
                 fontSize = 15.sp,
                 color = Color.Green
