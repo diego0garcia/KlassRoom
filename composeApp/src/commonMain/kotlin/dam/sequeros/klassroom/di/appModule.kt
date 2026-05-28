@@ -1,9 +1,12 @@
 package dam.sequeros.klassroom.di
 
 import dam.sequeros.klassroom.AppViewModel
+
 import dam.sequeros.klassroom.aplication.usecase.AddCurseUseCase
 import dam.sequeros.klassroom.aplication.usecase.AddSubjectUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetAllTeachersUseCase
+import dam.sequeros.klassroom.aplication.usecase.GetCourseByTeacherUseCase
+import dam.sequeros.klassroom.aplication.usecase.GetCoursesUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetSubjectsUseCase
 import dam.sequeros.klassroom.aplication.usecase.LoginUserUseCase
 import dam.sequeros.klassroom.aplication.usecase.RegisterUserUseCase
@@ -11,6 +14,7 @@ import dam.sequeros.klassroom.domain.AppSettings
 import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.domain.repository.IAdminRepository
 import dam.sequeros.klassroom.domain.repository.IAuthRepository
+
 import dam.sequeros.klassroom.domain.repository.IScheduleRepository
 import dam.sequeros.klassroom.domain.repository.IUtilsRepository
 import dam.sequeros.klassroom.infraestructure.TokenStorage
@@ -21,17 +25,21 @@ import dam.sequeros.klassroom.infraestructure.firebase.FirebaseUtilsRepository
 import dam.sequeros.klassroom.infraestructure.ktor.createHttpClient
 import dam.sequeros.klassroom.ui.main.MainViewModel
 import dam.sequeros.klassroom.ui.main.admin.AdminPanelViewModel
+
+import dam.sequeros.klassroom.ui.start.StartViewModel
+
 import dam.sequeros.klassroom.ui.main.admin.addcurse.CurseViewModel
 import dam.sequeros.klassroom.ui.main.profile.ProfileViewModel
 import dam.sequeros.klassroom.ui.main.admin.addsubject.SubjectViewModel
 import dam.sequeros.klassroom.ui.main.admin.adduser.AddUserViewModel
 import dam.sequeros.klassroom.ui.main.admin.enrollStudient.EnrollStudentViewModel
+import dam.sequeros.klassroom.ui.main.home.HomeViewModel
 import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
-import dam.sequeros.klassroom.ui.start.StartViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
+
     //APPLICATION LAYER
     single { AppSettings() }
     single { TokenStorage(get()) }
