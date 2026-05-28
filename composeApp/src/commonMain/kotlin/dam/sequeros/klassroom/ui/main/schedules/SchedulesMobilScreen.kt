@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import dam.sequeros.klassroom.ui.main.schedules.common.ScheduleHeader
 import dam.sequeros.klassroom.ui.main.schedules.common.ScheduleTable
+import kotlin.collections.listOf
 
 @Composable
 fun SchedulesMobilScreen() {
@@ -15,6 +16,8 @@ fun SchedulesMobilScreen() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         ScheduleHeader()
-        ScheduleTable()
+        ScheduleTable(
+            days = listOf("L", "M", "X", "J", "V")
+        )
     }
 }
