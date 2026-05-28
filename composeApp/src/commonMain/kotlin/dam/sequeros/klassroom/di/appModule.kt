@@ -5,6 +5,7 @@ import dam.sequeros.klassroom.aplication.usecase.AddCurseUseCase
 import dam.sequeros.klassroom.aplication.usecase.AddSubjectUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetAllTeachersUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetCoursesUseCase
+import dam.sequeros.klassroom.aplication.usecase.GetCourseByTeacherUseCase
 import dam.sequeros.klassroom.aplication.usecase.GetSubjectsUseCase
 import dam.sequeros.klassroom.aplication.usecase.LoginUserUseCase
 import dam.sequeros.klassroom.aplication.usecase.RegisterUserUseCase
@@ -27,6 +28,7 @@ import dam.sequeros.klassroom.ui.main.profile.ProfileViewModel
 import dam.sequeros.klassroom.ui.main.admin.addsubject.SubjectViewModel
 import dam.sequeros.klassroom.ui.main.admin.adduser.AddUserViewModel
 import dam.sequeros.klassroom.ui.main.admin.enrollStudient.EnrollStudentViewModel
+import dam.sequeros.klassroom.ui.main.home.HomeViewModel
 import dam.sequeros.klassroom.ui.main.schedules.ScheduleViewModel
 import dam.sequeros.klassroom.ui.start.StartViewModel
 import org.koin.core.module.dsl.viewModel
@@ -49,6 +51,7 @@ val appModule = module {
     viewModel { ProfileViewModel() }
     viewModel { EnrollStudentViewModel(get()) }
     viewModel { CurseViewModel(get(), get()) }
+    viewModel { HomeViewModel(get(), get()) }
 
     factory { LoginUserUseCase(get()) }
     factory { RegisterUserUseCase(get()) }
@@ -57,6 +60,7 @@ val appModule = module {
     factory { AddCurseUseCase(get()) }
     factory { GetAllTeachersUseCase(get()) }
     factory { GetCoursesUseCase(get()) }
+    factory { GetCourseByTeacherUseCase(get()) }
 
     //DOMAIN LAYER
     single <IAuthRepository>{ FirebaseAuthRepository(get(), get()) }

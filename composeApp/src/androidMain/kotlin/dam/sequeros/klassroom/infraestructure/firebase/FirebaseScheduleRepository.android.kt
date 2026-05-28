@@ -23,22 +23,4 @@ actual class FirebaseScheduleRepository actual constructor(
             emptyList()
         }
     }
-
-    actual override suspend fun addSubject(command: AddSubjectCommand): Boolean {
-        return try {
-            val subjectData = mapOf(
-                "id" to command.id,
-                "teacherId" to command.teacherId,
-                "name" to command.name,
-                "weekDay" to command.weekDay,
-                "startHour" to command.startHour,
-                "endHour" to command.endHour
-            )
-            sessionManager.db.collection("subjects").document(command.id).set(subjectData)
-            true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            false
-        }
-    }
 }

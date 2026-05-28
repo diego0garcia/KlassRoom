@@ -1,5 +1,39 @@
-package dam.sequeros.klassroom.ui.main.profile
+package dam.sequeros.klassroom.ui.main.profile.common
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,17 +54,18 @@ import dam.sequeros.klassroom.domain.SessionManager
 import dam.sequeros.klassroom.ui.common.CustomOptionButton
 import dam.sequeros.klassroom.ui.common.CustomTextField
 import dam.sequeros.klassroom.ui.common.Tag
+import dam.sequeros.klassroom.ui.main.profile.ProfileViewModel
 import klassroom.composeapp.generated.resources.Res
 import klassroom.composeapp.generated.resources.profile_example_light
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import dam.sequeros.klassroom.ui.main.profile.common.ProfileCommon
 
 @Composable
-fun ProfileDesktopScreen(
-    onCloseSession: () -> Unit,
-) {
+
+fun ProfileCommon(
+    onCloseSession: () -> Unit
+){
     val vm: ProfileViewModel = koinViewModel()
     val sessionManager: SessionManager = koinInject()
     val appSettings: AppSettings = koinInject()
@@ -348,7 +383,4 @@ fun ProfileDesktopScreen(
             }
         }
     }
-    ProfileCommon (
-        onCloseSession = onCloseSession,
-    )
 }

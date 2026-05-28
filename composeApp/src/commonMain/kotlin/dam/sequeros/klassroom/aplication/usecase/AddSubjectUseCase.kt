@@ -1,9 +1,9 @@
 package dam.sequeros.klassroom.aplication.usecase
 
 import dam.sequeros.klassroom.aplication.command.AddSubjectCommand
-import dam.sequeros.klassroom.domain.repository.IScheduleRepository
+import dam.sequeros.klassroom.domain.repository.IAdminRepository
 
-class AddSubjectUseCase(private val repository: IScheduleRepository) {
+class AddSubjectUseCase(private val repository: IAdminRepository) {
     suspend fun invoke(command: AddSubjectCommand): Result<Boolean> {
         return try {
             val result = repository.addSubject(command)
